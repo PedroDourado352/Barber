@@ -1,14 +1,15 @@
-import { CalendarDays, ChevronDown, LogOut, Scissors, X } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
+import { ChevronDown, LogOut, Scissors, X } from 'lucide-react'
 import { initialsFrom } from '../../lib/format'
 
-function Sidebar({ activePage, isOpen, navigation, user, pendingCount, onNavigate, onLogout, onClose }) {
+function Sidebar({ isOpen, navigation, user, pendingCount, onNavigate, onLogout, onClose }) {
   return (
     <>
       {isOpen && <button className="sidebar-backdrop" aria-label="Fechar menu" onClick={onClose} />}
       <aside className={`sidebar ${isOpen ? 'is-open' : ''}`}>
         <div className="brand-row">
           <div className="brand-mark">
-            <Scissors size={19} strokeWidth={2.5} />
+            <Scissors size={18} strokeWidth={2.5} />
           </div>
           <span className="brand-name">barberly</span>
           <button className="icon-button sidebar-close" aria-label="Fechar menu" onClick={onClose}>
@@ -27,29 +28,25 @@ function Sidebar({ activePage, isOpen, navigation, user, pendingCount, onNavigat
 
         <div className="sidebar-label">Menu principal</div>
         <nav className="nav-list">
-          {navigation.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              className={`nav-item ${activePage === key ? 'active' : ''}`}
-              onClick={() => onNavigate(key)}
+          {navigation.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              onClick={onNavigate}
             >
               <Icon size={18} />
               <span>{label}</span>
-              {key === 'agenda' && pendingCount > 0 && (
-                <span className="nav-count">{pendingCount}</span>
-              )}
-            </button>
+              {to === '/agenda' && pendingCount > 0 && <span className="nav-count">{pendingCount}</span>}
+            </NavLink>
           ))}
         </nav>
 
         <div className="sidebar-bottom">
           <div className="upgrade-card">
             <span className="upgrade-tag">DICA</span>
-            <strong>
-              Conclua os atendimentos
-              <br />
-              para alimentar o caixa.
-            </strong>
+            <strong>Conclua os atendimentos para alimentar o caixa.</strong>
             <span>Cada atendimento concluído vira uma entrada automática.</span>
           </div>
           <div className="sidebar-profile">

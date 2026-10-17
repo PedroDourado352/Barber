@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ArrowUpRight, CalendarDays, Clock3, Plus, Scissors, TrendingUp, Users } from 'lucide-react'
 import StatCard from './components/StatCard'
 import AppointmentsList from '../appointments/AppointmentsList'
@@ -21,8 +22,9 @@ function greeting() {
   return 'Boa noite'
 }
 
-function DashboardPage({ onNavigate }) {
+function DashboardPage() {
   const { db, currentUser } = useStore()
+  const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
 
   const today = todayISO()
@@ -63,7 +65,7 @@ function DashboardPage({ onNavigate }) {
       </section>
 
       <section className="dashboard-grid">
-        <AppointmentsList onSeeAll={() => onNavigate('agenda')} />
+        <AppointmentsList onSeeAll={() => navigate('/agenda')} />
         <aside className="right-column">
           <section className="panel performance-panel">
             <div className="panel-heading">
@@ -105,7 +107,7 @@ function DashboardPage({ onNavigate }) {
                 <p className="panel-kicker">MAIS POPULARES</p>
                 <h2>Serviços da semana</h2>
               </div>
-              <button className="text-button" onClick={() => onNavigate('services')}>
+              <button className="text-button" onClick={() => navigate('/servicos')}>
                 Ver todos
               </button>
             </div>

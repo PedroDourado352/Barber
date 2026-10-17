@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { CalendarPlus, Mail, Pencil, Phone, Plus, Search, Trash2, UserRound, Users } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { CalendarPlus, Mail, Pencil, Phone, Plus, Search, Trash2, Users } from 'lucide-react'
 import Modal from '../../components/ui/Modal'
 import ConfirmDialog from '../../components/ui/ConfirmDialog'
 import EmptyState from '../../components/ui/EmptyState'
@@ -138,8 +139,9 @@ function ClientDetail({ client, onClose, onEdit, onGoToAgenda }) {
   )
 }
 
-function ClientsPage({ onGoToAgenda }) {
+function ClientsPage() {
   const { db, addClient, updateClient, removeClient } = useStore()
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [formModal, setFormModal] = useState(null) // null | 'new' | client
   const [detail, setDetail] = useState(null)
@@ -247,7 +249,7 @@ function ClientsPage({ onGoToAgenda }) {
           }}
           onGoToAgenda={() => {
             setDetail(null)
-            onGoToAgenda?.()
+            navigate('/agenda')
           }}
         />
       )}
