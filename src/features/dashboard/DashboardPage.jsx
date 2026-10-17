@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUpRight, CalendarDays, Clock3, Plus, Scissors, TrendingUp, Users } from 'lucide-react'
 import StatCard from './components/StatCard'
 import AppointmentsList from '../appointments/AppointmentsList'
-import AppointmentForm from '../appointments/AppointmentForm'
 import { useStore } from '../../lib/store'
 import {
   dashboardStats,
@@ -25,7 +23,6 @@ function greeting() {
 function DashboardPage() {
   const { db, currentUser } = useStore()
   const navigate = useNavigate()
-  const [showModal, setShowModal] = useState(false)
 
   const today = todayISO()
   const stats = dashboardStats(db, today)
@@ -53,7 +50,7 @@ function DashboardPage() {
           </h1>
           <p className="heading-subtitle">Aqui está o que está acontecendo na sua barbearia.</p>
         </div>
-        <button className="primary-button" onClick={() => setShowModal(true)}>
+        <button className="primary-button" onClick={() => navigate('/agendar')}>
           <Plus size={18} /> Novo agendamento
         </button>
       </section>
@@ -131,7 +128,6 @@ function DashboardPage() {
         </aside>
       </section>
 
-      {showModal && <AppointmentForm defaultDate={today} onClose={() => setShowModal(false)} />}
     </div>
   )
 }

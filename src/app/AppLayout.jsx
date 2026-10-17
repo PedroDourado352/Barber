@@ -8,6 +8,7 @@ import {
   Menu,
   Scissors,
   Settings,
+  Sparkles,
   Users,
   Wallet,
 } from 'lucide-react'
@@ -17,6 +18,7 @@ import { initialsFrom } from '../lib/format'
 
 export const navigation = [
   { to: '/', label: 'Visão geral', icon: LayoutDashboard, end: true },
+  { to: '/agendar', label: 'Agendar com IA', icon: Sparkles },
   { to: '/agenda', label: 'Agenda', icon: CalendarDays },
   { to: '/clientes', label: 'Clientes', icon: Users },
   { to: '/servicos', label: 'Serviços', icon: Scissors },
@@ -26,6 +28,7 @@ export const navigation = [
 
 const titles = {
   '/': 'Visão geral',
+  '/agendar': 'Agendar com IA',
   '/agenda': 'Agenda',
   '/clientes': 'Clientes',
   '/servicos': 'Serviços',

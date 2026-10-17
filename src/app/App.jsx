@@ -5,6 +5,7 @@ import AgendaPage from '../features/appointments/AgendaPage'
 import ClientsPage from '../features/clients/ClientsPage'
 import ServicesPage from '../features/services/ServicesPage'
 import FinancePage from '../features/finance/FinancePage'
+import BookingAssistantPage from '../features/booking/BookingAssistantPage'
 import AuthScreen from '../features/auth/AuthScreen'
 import NotFoundPage from '../pages/NotFoundPage'
 import { useStore } from '../lib/store'
@@ -32,6 +33,7 @@ function App() {
         <Route element={isAuthenticated ? <AppLayout /> : <Navigate to="/login" replace />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/agenda" element={<AgendaPage />} />
+          <Route path="/agendar" element={<BookingAssistantPage />} />
           <Route path="/clientes" element={<ClientsPage />} />
           <Route path="/servicos" element={<ServicesPage />} />
           <Route path="/caixa" element={<FinancePage />} />
