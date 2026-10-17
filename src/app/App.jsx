@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CalendarDays, ChartNoAxesCombined, CircleHelp, LayoutDashboard, Menu, Scissors, Settings, Users, X } from 'lucide-react'
 import DashboardPage from '../features/dashboard/DashboardPage'
+import AuthScreen from '../features/auth/AuthScreen'
 import Sidebar from '../components/layout/Sidebar'
 
 const navigation = [
@@ -12,8 +13,13 @@ const navigation = [
 ]
 
 function App() {
+  const [isAuthenticated, setAuthenticated] = useState(false)
   const [activePage, setActivePage] = useState('Visão geral')
   const [isSidebarOpen, setSidebarOpen] = useState(false)
+
+  if (!isAuthenticated) {
+    return <AuthScreen onAuthenticated={() => setAuthenticated(true)} />
+  }
 
   return (
     <div className="app-shell">
