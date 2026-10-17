@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Phone, Scissors, User } from 'lucide-react'
 import { useStore } from '../../lib/store'
 
@@ -49,13 +50,15 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, placehol
   )
 }
 
-function AuthScreen() {
+function AuthScreen({ initialMode = modes.login }) {
   const { login, register } = useStore()
-  const [mode, setMode] = useState(modes.login)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const mode = initialMode
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState('')
-  const [info, setInfo] = useState('')
+  const [info, setInfo] = useState(location.state?.info || '')
   const [form, setForm] = useState({
     name: '',
     business: '',
@@ -74,9 +77,9 @@ function AuthScreen() {
   }
 
   const switchMode = (next) => {
-    setMode(next)
     setError('')
     setInfo('')
+    navigate(next === modes.register ? '/register' : next === modes.forgot ? '/forgot-password' : '/login')
   }
 
   const submitForm = (event) => {
@@ -84,8 +87,7 @@ function AuthScreen() {
     setError('')
 
     if (mode === modes.forgot) {
-      setMode(modes.login)
-      setInfo('Se o e-mail existir, enviaremos as instruções de recuperação.')
+      navigate('/login', { state: { info: 'Se o e-mail existir, enviaremos as instruções de recuperação.' } })
       return
     }
 

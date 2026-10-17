@@ -273,6 +273,13 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif; }
 .auth-alert.error { background: var(--red-bg); color: #e89a93; border: 1px solid rgba(224, 104, 95, 0.25); }
 .auth-alert.info { background: var(--blue-bg); color: #a3c7dc; border: 1px solid rgba(111, 168, 204, 0.25); }
 
+/* ------------------------------------------------------------ 404 */
+.not-found-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--bg); }
+.not-found-card { width: min(100%, 430px); display: grid; justify-items: center; gap: 14px; padding: 42px 32px; text-align: center; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-pop); }
+.not-found-icon { width: 52px; height: 52px; display: grid; place-items: center; color: var(--accent-ink); background: var(--accent); border-radius: 15px; }
+.not-found-card h1 { margin: 0; color: var(--text); font-size: 25px; letter-spacing: -0.5px; }
+.not-found-card p { max-width: 290px; margin: 0 0 8px; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+
 /* ---------------------------------------------------------- Responsivo */
 @media (max-width: 1050px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
