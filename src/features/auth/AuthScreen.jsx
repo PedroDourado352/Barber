@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, CalendarDays, Check, Eye, EyeOff, LockKeyhole, Mail, Phone, Scissors, ShieldCheck, User, Users } from 'lucide-react'
+import { ArrowRight, CalendarDays, Eye, EyeOff, LockKeyhole, Mail, Phone, Scissors, User, Users } from 'lucide-react'
 
 const modes = { login: 'login', register: 'register', forgot: 'forgot' }
 
@@ -35,11 +35,6 @@ function AuthScreen({ onAuthenticated }) {
   const description = mode === modes.login ? 'Acesse sua conta para acompanhar sua agenda.' : mode === modes.register ? 'Crie sua conta e organize sua barbearia em poucos minutos.' : 'Enviaremos um link para você criar uma nova senha.'
 
   return <main className="auth-page">
-    <section className="auth-showcase">
-      <div className="auth-brand"><span className="auth-brand-mark"><CalendarDays size={20} /></span><strong>barberly</strong></div>
-      <div className="showcase-content"><p className="eyebrow">GESTÃO FEITA PARA BARBEIROS</p><h1>Mais tempo<br />para fazer<br /><em>o que importa.</em></h1><p>Uma agenda tranquila, clientes fiéis e uma barbearia crescendo no ritmo certo.</p><div className="showcase-note"><span className="quote-mark">“</span><div><strong>O dia rende muito mais</strong><span>quando a agenda trabalha por você.</span></div><div className="mini-avatars"><i>RM</i><i>LA</i><i>GN</i><b>+2k</b></div></div></div>
-      <div className="showcase-footer"><span><ShieldCheck size={15} /> Seus dados estão protegidos</span><span>© 2026 Barberly</span></div>
-    </section>
     <section className="auth-panel"><div className="auth-form-container">
       <div className="auth-mobile-brand"><span className="auth-brand-mark"><CalendarDays size={18} /></span><strong>barberly</strong></div>
       {mode !== modes.forgot && <div className="auth-tabs"><button className={mode === modes.login ? 'active' : ''} onClick={() => setMode(modes.login)}>Entrar</button><button className={mode === modes.register ? 'active' : ''} onClick={() => setMode(modes.register)}>Criar conta</button></div>}
