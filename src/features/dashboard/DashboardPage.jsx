@@ -1,33 +1,135 @@
-import { ArrowUpRight, CalendarDays, ChevronDown, Clock3, MoreHorizontal, Plus, Scissors, TrendingUp, Users } from 'lucide-react'
 import { useState } from 'react'
+import { ArrowUpRight, CalendarDays, Clock3, Plus, Scissors, TrendingUp, Users } from 'lucide-react'
 import StatCard from './components/StatCard'
 import AppointmentsList from '../appointments/AppointmentsList'
+import AppointmentForm from '../appointments/AppointmentForm'
+import { useStore } from '../../lib/store'
+import {
+  dashboardStats,
+  last7DaysRevenue,
+  popularServices,
+  rangeSummary,
+} from '../../lib/selectors'
+import { formatCurrency, formatLongDate, todayISO } from '../../lib/format'
 
-const stats = [
-  { label: 'Faturamento hoje', value: 'R$ 1.840', change: '+18,4%', note: 'vs. semana passada', icon: TrendingUp, tone: 'green' },
-  { label: 'Agendamentos', value: '24', change: '+6', note: 'vs. ontem', icon: CalendarDays, tone: 'orange' },
-  { label: 'Novos clientes', value: '08', change: '+33%', note: 'este mês', icon: Users, tone: 'blue' },
-  { label: 'Ocupação da agenda', value: '82%', change: 'Ótimo', note: 'média da semana', icon: Clock3, tone: 'purple' },
-]
+const weekdayShort = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb']
 
-function DashboardPage({ activePage }) {
+function greeting() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Bom dia'
+  if (hour < 18) return 'Boa tarde'
+  return 'Boa noite'
+}
+
+function DashboardPage({ onNavigate }) {
+  const { db, currentUser } = useStore()
   const [showModal, setShowModal] = useState(false)
+
+  const today = todayISO()
+  const stats = dashboardStats(db, today)
+  const chart = last7DaysRevenue(db, today)
+  const maxRevenue = Math.max(...chart.map((d) => d.income), 1)
+  const weekStart = chart[0]?.iso || today
+  const week = rangeSummary(db, weekStart, today)
+  const popular = popularServices(db, weekStart, today, 3)
+  const firstName = (currentUser?.name || '').split(' ')[0] || 'bem-vindo'
+
+  const statCards = [
+    { label: 'Faturamento hoje', value: formatCurrency(stats.revenueToday), note: 'entradas de hoje', icon: TrendingUp, tone: 'green' },
+    { label: 'Agendamentos hoje', value: String(stats.appointmentsToday), note: 'horários marcados', icon: CalendarDays, tone: 'orange' },
+    { label: 'Novos clientes', value: String(stats.newClientsThisMonth), note: 'este mês', icon: Users, tone: 'blue' },
+    { label: 'Ocupação da agenda', value: `${stats.occupancy}%`, note: 'estimada hoje', icon: Clock3, tone: 'purple' },
+  ]
 
   return (
     <div className="page-content">
       <section className="page-heading">
-        <div><p className="eyebrow">Sábado, 17 de outubro de 2026</p><h1>{activePage === 'Visão geral' ? <>Bom dia, Pedro <span className="wave">✦</span></> : activePage}</h1><p className="heading-subtitle">Aqui está o que está acontecendo na sua barbearia.</p></div>
-        <button className="primary-button" onClick={() => setShowModal(true)}><Plus size={18} /> Novo agendamento</button>
+        <div>
+          <p className="eyebrow">{formatLongDate(today)}</p>
+          <h1>
+            {greeting()}, {firstName} <span className="wave">✦</span>
+          </h1>
+          <p className="heading-subtitle">Aqui está o que está acontecendo na sua barbearia.</p>
+        </div>
+        <button className="primary-button" onClick={() => setShowModal(true)}>
+          <Plus size={18} /> Novo agendamento
+        </button>
       </section>
-      <section className="stats-grid">{stats.map((stat) => <StatCard key={stat.label} {...stat} />)}</section>
+
+      <section className="stats-grid">
+        {statCards.map((stat) => (
+          <StatCard key={stat.label} {...stat} />
+        ))}
+      </section>
+
       <section className="dashboard-grid">
-        <AppointmentsList />
+        <AppointmentsList onSeeAll={() => onNavigate('agenda')} />
         <aside className="right-column">
-          <section className="panel performance-panel"><div className="panel-heading"><div><p className="panel-kicker">DESEMPENHO</p><h2>Resumo da semana</h2></div><button className="icon-button"><MoreHorizontal size={19} /></button></div><div className="performance-value">R$ 8.420 <span><ArrowUpRight size={15} /> 12,6%</span></div><p className="muted-copy">Faturamento acumulado</p><div className="chart" aria-label="Gráfico de faturamento semanal"><div className="chart-line"><i /><i /><i /><i /><i /><i /><i /></div><div className="chart-grid"><span>seg</span><span>ter</span><span>qua</span><span>qui</span><span>sex</span><span>sáb</span><span>dom</span></div></div></section>
-          <section className="panel services-panel"><div className="panel-heading"><div><p className="panel-kicker">MAIS POPULARES</p><h2>Serviços do mês</h2></div><button className="text-button">Ver todos</button></div><div className="service-item"><span className="service-icon dark"><Scissors size={17} /></span><div><strong>Corte + Barba</strong><span>42 agendamentos</span></div><b>R$ 2.940</b></div><div className="service-item"><span className="service-icon light"><Scissors size={17} /></span><div><strong>Corte tradicional</strong><span>31 agendamentos</span></div><b>R$ 1.860</b></div></section>
+          <section className="panel performance-panel">
+            <div className="panel-heading">
+              <div>
+                <p className="panel-kicker">DESEMPENHO</p>
+                <h2>Resumo da semana</h2>
+              </div>
+            </div>
+            <div className="performance-value">
+              {formatCurrency(week.income)}
+              {week.income > 0 && (
+                <span>
+                  <ArrowUpRight size={15} /> últimos 7 dias
+                </span>
+              )}
+            </div>
+            <p className="muted-copy">Faturamento acumulado</p>
+            <div className="chart" aria-label="Gráfico de faturamento semanal">
+              <div className="chart-line">
+                {chart.map((day) => (
+                  <i
+                    key={day.iso}
+                    style={{ height: `${Math.max(6, (day.income / maxRevenue) * 100)}%` }}
+                    title={`${formatCurrency(day.income)}`}
+                  />
+                ))}
+              </div>
+              <div className="chart-grid">
+                {chart.map((day) => (
+                  <span key={day.iso}>{weekdayShort[day.weekday]}</span>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="panel services-panel">
+            <div className="panel-heading">
+              <div>
+                <p className="panel-kicker">MAIS POPULARES</p>
+                <h2>Serviços da semana</h2>
+              </div>
+              <button className="text-button" onClick={() => onNavigate('services')}>
+                Ver todos
+              </button>
+            </div>
+            {popular.length === 0 ? (
+              <p className="muted-copy empty-inline">Sem atendimentos concluídos ainda.</p>
+            ) : (
+              popular.map((service, index) => (
+                <div className="service-item" key={service.name}>
+                  <span className={`service-icon ${index === 0 ? 'dark' : 'light'}`}>
+                    <Scissors size={17} />
+                  </span>
+                  <div>
+                    <strong>{service.name}</strong>
+                    <span>{service.count} agendamento(s)</span>
+                  </div>
+                  <b>{formatCurrency(service.revenue)}</b>
+                </div>
+              ))
+            )}
+          </section>
         </aside>
       </section>
-      {showModal && <div className="modal-layer" role="dialog" aria-modal="true"><div className="modal"><div className="modal-heading"><div><p className="panel-kicker">AGENDA</p><h2>Novo agendamento</h2></div><button className="icon-button" onClick={() => setShowModal(false)}>×</button></div><label>Nome do cliente<input placeholder="Ex.: Lucas Almeida" autoFocus /></label><label>Serviço<select defaultValue="Corte + Barba"><option>Corte + Barba</option><option>Corte tradicional</option><option>Barba</option></select></label><div className="form-row"><label>Data<input type="date" defaultValue="2026-10-17" /></label><label>Horário<input type="time" defaultValue="10:30" /></label></div><button className="primary-button full" onClick={() => setShowModal(false)}>Adicionar à agenda</button></div></div>}
+
+      {showModal && <AppointmentForm defaultDate={today} onClose={() => setShowModal(false)} />}
     </div>
   )
 }

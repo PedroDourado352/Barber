@@ -1,0 +1,202 @@
+/* Estilos dos módulos funcionais (agenda, clientes, serviços, caixa).
+   Complementa global.css usando os mesmos tokens de cor. */
+
+/* --- Botões auxiliares ------------------------------------------------- */
+.ghost-button { display: inline-flex; align-items: center; gap: 7px; background: #f5f2ec; border: 1px solid #e6e2da; color: #5f645d; border-radius: 7px; padding: 9px 14px; font-size: 12px; font-weight: 600; }
+.ghost-button:hover { background: #efebe3; }
+.danger-button { background: #c0442f; color: #fff; border-radius: 7px; padding: 10px 16px; font-size: 12px; font-weight: 600; }
+.danger-button:hover { background: #a93a28; }
+.text-button { display: inline-flex; align-items: center; gap: 5px; }
+.icon-button.danger { color: #bf6a6a; }
+.icon-button.danger:hover { background: #f6e3e0; color: #b03a28; }
+.chip-button { display: inline-flex; align-items: center; gap: 5px; background: #f5f2ec; border: 1px solid #e6e2da; color: #686d65; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.chip-button:hover { background: #ece8e0; }
+.chip-button.success { background: #e5f0e7; border-color: #cfe4d4; color: #3f8257; }
+.chip-button.success:hover { background: #d8eadc; }
+
+/* --- Segmented / abas -------------------------------------------------- */
+.segmented { display: inline-flex; background: #efece5; border: 1px solid #e6e2da; border-radius: 9px; padding: 4px; gap: 3px; margin-bottom: 22px; }
+.segmented button { display: inline-flex; align-items: center; gap: 7px; background: transparent; color: #80857c; border-radius: 6px; padding: 8px 15px; font-size: 12px; font-weight: 600; }
+.segmented button.active { background: #fffdfa; color: #2a2e29; box-shadow: 0 1px 3px #2327221a; }
+.segmented.subtle { margin-bottom: 0; }
+.segmented.subtle button { padding: 7px 13px; font-size: 11px; }
+
+/* --- Busca ------------------------------------------------------------- */
+.search-bar { display: flex; align-items: center; gap: 10px; background: #fffdfa; border: 1px solid var(--line); border-radius: 9px; padding: 11px 15px; margin-bottom: 16px; color: #a0a49c; }
+.search-bar input { flex: 1; border: 0; outline: 0; background: transparent; color: #333730; font-size: 13px; }
+
+/* --- Grid de cards (serviços/equipe) ---------------------------------- */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 13px; }
+.item-card { display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 15px; background: #fffdfb; }
+.item-card-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.item-card-body strong { font-size: 13px; }
+.item-card-body .muted-copy { margin: 0; display: inline-flex; align-items: center; gap: 5px; }
+.item-price { font-size: 14px; color: #4b504a; }
+.item-actions { display: flex; gap: 2px; }
+
+/* --- Lista de clientes ------------------------------------------------- */
+.client-list { display: grid; gap: 2px; }
+.client-row { display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; background: transparent; border: 0; border-radius: 9px; padding: 12px 10px; transition: background .15s; }
+.client-row:hover { background: #f7f4ee; }
+.client-row + .client-row { border-top: 1px solid #f1eee8; }
+.client-row-main { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.client-row-main strong { font-size: 13px; }
+.client-row-main .muted-copy { margin: 0; }
+.client-row-meta { display: grid; gap: 3px; text-align: right; margin-right: 6px; }
+.client-row-meta span { color: #9a9d96; font-size: 10px; }
+.client-row-meta b { font-size: 12px; color: #5b605a; }
+.client-avatar.big { width: 52px; height: 52px; font-size: 15px; background: #d8baa4; color: #764a32; }
+.client-avatar { background: #e4e9df; color: #5a6a56; }
+
+/* --- Ficha do cliente -------------------------------------------------- */
+.client-detail { display: grid; gap: 18px; }
+.client-detail-head { display: flex; align-items: center; gap: 14px; }
+.client-detail-contacts { flex: 1; display: grid; gap: 5px; color: #74796f; font-size: 12px; }
+.client-detail-contacts span { display: inline-flex; align-items: center; gap: 6px; }
+.client-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.client-stats > div { background: #f7f4ee; border-radius: 9px; padding: 13px; display: grid; gap: 4px; }
+.client-stats .muted-copy { margin: 0; }
+.client-stats strong { font-size: 17px; }
+.client-notes { background: #fbf4ec; border: 1px solid #f0e4d6; border-radius: 9px; padding: 12px 14px; color: #6d6459; font-size: 12px; margin: 0; line-height: 1.5; }
+.panel-heading.compact { align-items: center; margin-bottom: 4px; }
+.panel-heading.compact h3 { font-family: 'Playfair Display', serif; font-size: 16px; margin: 0; display: inline-flex; align-items: center; gap: 7px; }
+.history-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.history-list li { display: grid; grid-template-columns: 90px 1fr auto auto; align-items: center; gap: 12px; padding: 11px 4px; border-top: 1px solid #f1eee8; font-size: 12px; }
+.history-date { display: grid; gap: 2px; }
+.history-date strong { font-size: 12px; }
+.history-date span { color: #9a9d96; font-size: 10px; }
+.history-info { display: grid; gap: 2px; min-width: 0; }
+.history-info strong { font-size: 12px; }
+.history-info .muted-copy { margin: 0; }
+
+/* --- Pílulas de status ------------------------------------------------- */
+.status-pill { display: inline-flex; align-items: center; justify-content: center; border-radius: 20px; padding: 4px 11px; font-size: 10px; font-weight: 600; white-space: nowrap; background: #e9ece6; color: #6b7067; }
+.status-pill.confirmado { background: #e3eff3; color: #4f8298; }
+.status-pill.aguardando { background: #fae9dc; color: #bd7640; }
+.status-pill.concluido { background: #e3f0e6; color: #4b9564; }
+.status-pill.cancelado { background: #f2e4e2; color: #b36a5e; }
+.status.done { color: #4b9564; }
+
+/* --- Navegação de data (agenda) --------------------------------------- */
+.date-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.date-nav-center { position: relative; display: flex; align-items: center; gap: 9px; background: #fffdfa; border: 1px solid var(--line); border-radius: 9px; padding: 10px 15px; color: #4d514b; font-size: 13px; }
+.date-nav-center strong { font-weight: 600; }
+.date-nav-center input[type="date"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.date-nav .text-button { margin-left: 4px; }
+
+/* --- Lista da agenda --------------------------------------------------- */
+.agenda-list { display: grid; gap: 2px; }
+.agenda-item { display: grid; grid-template-columns: 78px minmax(150px, 1.4fr) auto auto auto; align-items: center; gap: 14px; padding: 14px 8px; border-top: 1px solid #f1eee8; }
+.agenda-item:first-child { border-top: 0; }
+.agenda-item.concluido { opacity: .72; }
+.agenda-item.cancelado { opacity: .5; }
+.agenda-time { display: inline-flex; align-items: center; gap: 6px; color: #676c64; }
+.agenda-time strong { font-size: 13px; }
+.agenda-client { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.agenda-client > div { min-width: 0; display: grid; gap: 2px; }
+.agenda-client strong { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agenda-client .muted-copy { margin: 0; }
+.agenda-price { font-size: 13px; color: #4b504a; white-space: nowrap; }
+.agenda-actions { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+
+/* --- Dropdown de ações ------------------------------------------------- */
+.menu-wrap { position: relative; }
+.menu-backdrop { position: fixed; inset: 0; z-index: 3; background: transparent; }
+.dropdown { position: absolute; right: 0; top: calc(100% + 4px); z-index: 4; background: #fffdfa; border: 1px solid #e7e3db; border-radius: 9px; box-shadow: 0 12px 30px #2327221f; padding: 5px; display: grid; gap: 1px; min-width: 150px; }
+.dropdown button { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; background: transparent; color: #55594f; border-radius: 6px; padding: 9px 11px; font-size: 12px; }
+.dropdown button:hover { background: #f4f1eb; }
+.dropdown button.danger { color: #b64f3b; }
+.dropdown button.danger:hover { background: #f6e4e0; }
+
+/* --- Caixa / financeiro ------------------------------------------------ */
+.finance-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.finance-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; margin-bottom: 20px; }
+.summary-card { display: flex; align-items: center; gap: 13px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+.summary-card > div { display: grid; gap: 4px; }
+.summary-card .muted-copy { margin: 0; }
+.summary-card strong { font-size: 21px; letter-spacing: -.5px; }
+.service-icon.green { color: #4b9564; background: #e3f0e6; }
+.service-icon.orange { color: #c96e38; background: #fae9dc; }
+.service-icon.blue { color: #56819a; background: #e3eff3; }
+.service-icon.purple { color: #8371a1; background: #ede8f4; }
+.tx-list { display: grid; gap: 1px; margin-top: 8px; }
+.tx-row { display: flex; align-items: center; gap: 13px; padding: 12px 4px; border-top: 1px solid #f1eee8; }
+.tx-icon { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex-shrink: 0; }
+.tx-icon.entrada { color: #4b9564; background: #e3f0e6; }
+.tx-icon.saida { color: #c0563a; background: #f6e3de; }
+.tx-main { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.tx-main strong { font-size: 13px; }
+.tx-main .muted-copy { margin: 0; }
+.amount-in { color: #41895c; font-size: 13px; white-space: nowrap; }
+.amount-out { color: #c0563a; font-size: 13px; white-space: nowrap; }
+
+/* --- Relatórios -------------------------------------------------------- */
+.reports-grid { display: grid; grid-template-columns: 1.2fr .9fr; gap: 14px; align-items: start; }
+.report-table { margin-top: 10px; }
+.report-head, .report-row { display: grid; grid-template-columns: 1.4fr 1fr .6fr 1fr; gap: 10px; align-items: center; }
+.report-head { color: #a1a49d; font-size: 9px; letter-spacing: .8px; text-transform: uppercase; padding: 0 4px 6px; }
+.report-row { border-top: 1px solid #f1eee8; padding: 12px 4px; font-size: 12px; }
+.report-row strong { font-size: 12px; }
+.report-row b { color: #41895c; }
+
+/* --- Formulários ------------------------------------------------------- */
+.form { display: grid; gap: 15px; }
+.form label { color: #686d65; display: grid; gap: 6px; font-size: 11px; margin: 0; }
+.form input, .form select, .form textarea { border: 1px solid #deded6; border-radius: 6px; color: #323630; padding: 10px; outline: none; background: #fff; font-family: inherit; }
+.form input:focus, .form select:focus, .form textarea:focus { border-color: #c96734; }
+.form textarea { resize: vertical; }
+.field-hint { color: #a0a49c; font-size: 10px; font-weight: 400; }
+.field-label { color: #686d65; font-size: 11px; font-weight: 600; display: block; margin-bottom: 9px; }
+.mode-toggle { display: flex; background: #efece5; border-radius: 8px; padding: 4px; gap: 3px; }
+.mode-toggle button { flex: 1; background: transparent; color: #80857c; border-radius: 6px; padding: 9px; font-size: 12px; font-weight: 600; }
+.mode-toggle button.active { background: #fffdfa; color: #2a2e29; box-shadow: 0 1px 3px #2327221a; }
+
+/* --- Pagamento --------------------------------------------------------- */
+.payment-amount { font-family: 'Playfair Display', serif; font-size: 34px; color: #2a2e29; text-align: center; margin: 4px 0 22px; }
+.payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 20px; }
+.payment-option { display: flex; align-items: center; gap: 9px; background: #fff; border: 1px solid #deded6; border-radius: 8px; padding: 12px; color: #5d625a; font-size: 12px; font-weight: 600; }
+.payment-option:hover { border-color: #cbb9a9; }
+.payment-option.active { border-color: #c96734; background: #fbf1ea; color: #a9552a; box-shadow: 0 0 0 1px #c96734; }
+
+/* --- Confirmação ------------------------------------------------------- */
+.confirm-message { color: #5d625a; font-size: 13px; line-height: 1.5; margin: 0 0 20px; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* --- Alertas (auth) ---------------------------------------------------- */
+.auth-alert { border-radius: 8px; padding: 11px 14px; font-size: 12px; margin-bottom: 16px; }
+.auth-alert.error { background: #f6e4e0; color: #a84330; border: 1px solid #ecc9c1; }
+.auth-alert.info { background: #e3eff3; color: #3f6b80; border: 1px solid #c9e0e8; }
+
+/* --- Estado vazio ------------------------------------------------------ */
+.empty-state { display: grid; justify-items: center; text-align: center; gap: 11px; padding: 44px 20px; }
+.empty-icon { width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; background: #f2eee7; color: #b99a81; }
+.empty-state strong { font-size: 15px; color: #3b3f39; }
+.empty-state p { color: #969a92; font-size: 12px; max-width: 320px; margin: 0; line-height: 1.5; }
+.empty-inline { padding: 26px 4px; text-align: center; margin: 0; font-size: 12px; }
+
+/* --- Gráfico real (sobrescreve o decorativo do global.css) ------------ */
+.performance-panel .chart { height: 110px; border-bottom: 1px solid #e7e9e2; }
+.performance-panel .chart::before { display: none; }
+.performance-panel .chart-line { align-items: flex-end; height: 86px; gap: 8px; padding: 0 2px; }
+.performance-panel .chart-line::before { display: none; }
+.performance-panel .chart-line i { flex: 1; width: auto; min-height: 4px; background: linear-gradient(180deg, #e08a52, #cf6b37); border: 0; border-radius: 5px 5px 0 0; transition: opacity .2s; }
+.performance-panel .chart-line i:hover { opacity: .8; }
+
+/* --- Responsivo -------------------------------------------------------- */
+@media (max-width: 1050px) {
+  .reports-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .finance-summary { grid-template-columns: 1fr; }
+  .client-stats { grid-template-columns: 1fr 1fr; }
+  .agenda-item { grid-template-columns: 64px 1fr auto; row-gap: 10px; }
+  .agenda-item .agenda-price { grid-column: 2; }
+  .agenda-item .status-pill { grid-column: 3; }
+  .agenda-actions { grid-column: 1 / -1; justify-content: flex-start; flex-wrap: wrap; }
+  .history-list li { grid-template-columns: 70px 1fr auto; }
+  .history-list li b { grid-column: 3; }
+  .report-head, .report-row { grid-template-columns: 1.2fr 1fr .9fr; }
+  .report-head span:nth-child(3), .report-row span:nth-child(3) { display: none; }
+  .finance-toolbar { flex-direction: column; align-items: stretch; }
+  .card-grid { grid-template-columns: 1fr; }
+}
