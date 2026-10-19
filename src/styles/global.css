@@ -89,7 +89,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; background: var(--bg); color: var(--text); }
 button, input, select, textarea { font: inherit; }
-button { border: 0; cursor: pointer; color: inherit; }
+button { border: 0; cursor: pointer; }
 h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif; }
 ::selection { background: rgba(244, 245, 247, 0.16); }
 
