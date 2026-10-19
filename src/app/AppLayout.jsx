@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import {
   CalendarDays,
@@ -6,9 +6,11 @@ import {
   CircleHelp,
   LayoutDashboard,
   Menu,
+  Moon,
   Scissors,
   Settings,
   Sparkles,
+  Sun,
   Users,
   Wallet,
 } from 'lucide-react'
@@ -39,8 +41,18 @@ const titles = {
 function AppLayout() {
   const { currentUser, logout, db } = useStore()
   const [isSidebarOpen, setSidebarOpen] = useState(false)
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('barberly:theme')
+    if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
+    return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+  })
   const location = useLocation()
   const title = titles[location.pathname] || 'Visão geral'
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('barberly:theme', theme)
+  }, [theme])
 
   return (
     <div className="app-shell">
@@ -64,6 +76,15 @@ function AppLayout() {
             <strong>{title}</strong>
           </div>
           <div className="topbar-actions">
+            <button
+              className="icon-button"
+              aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
+              aria-pressed={theme === 'light'}
+              title={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
+              onClick={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
+            >
+              {theme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
+            </button>
             <button className="icon-button" aria-label="Ajuda">
               <CircleHelp size={19} />
             </button>
