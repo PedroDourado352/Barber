@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import App from './app/App'
 import { StoreProvider } from './lib/store'
 import './styles/global.css'
-import './styles/components.css'
 
 const savedTheme = localStorage.getItem('barberly:theme')
 const initialTheme =

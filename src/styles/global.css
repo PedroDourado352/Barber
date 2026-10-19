@@ -273,7 +273,8 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif; }
 .full { width: 100%; justify-content: center; margin-top: 4px; }
 
 /* ----------------------------------------------------------------- Auth */
-.auth-page { min-height: 100vh; display: grid; place-items: center; padding: 40px 22px; background: radial-gradient(130% 90% at 50% 0%, var(--auth-bg-start) 0%, var(--bg) 60%); }
+.auth-page { min-height: 100vh; display: grid; place-items: center; padding: 40px 22px; position: relative; background: radial-gradient(130% 90% at 50% 0%, var(--auth-bg-start) 0%, var(--bg) 60%); }
+.auth-theme-toggle { position: absolute; top: 22px; right: 22px; }
 .auth-panel { width: 100%; display: grid; place-items: center; }
 .auth-form-container {
   width: min(100%, 420px); padding: 36px 36px 32px; border: 1px solid var(--border);

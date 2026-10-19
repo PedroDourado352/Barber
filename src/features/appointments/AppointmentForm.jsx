@@ -91,22 +91,22 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
   return (
     <Modal title={initial ? 'Editar agendamento' : 'Novo agendamento'} kicker="Agenda" onClose={onClose}>
       {noServices ? (
-        <p className="muted-copy empty-inline">
+        <p className="m-0 py-7 text-center text-xs text-[var(--text-dim)]">
           Cadastre pelo menos um serviço antes de criar um agendamento (menu Serviços).
         </p>
       ) : (
-        <form className="form" onSubmit={submit}>
-          <div className="mode-toggle">
+        <form className="grid gap-[15px]" onSubmit={submit}>
+          <div className="flex gap-[3px] rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-1">
             <button
               type="button"
-              className={form.clientMode === 'existing' ? 'active' : ''}
+              className={`flex-1 rounded-md px-2 py-2 text-xs font-semibold text-[var(--text-muted)] ${form.clientMode === 'existing' ? 'bg-[var(--surface-3)] text-[var(--text)]' : ''}`}
               onClick={() => update('clientMode', 'existing')}
             >
               Cliente cadastrado
             </button>
             <button
               type="button"
-              className={form.clientMode === 'walkin' ? 'active' : ''}
+              className={`flex-1 rounded-md px-2 py-2 text-xs font-semibold text-[var(--text-muted)] ${form.clientMode === 'walkin' ? 'bg-[var(--surface-3)] text-[var(--text)]' : ''}`}
               onClick={() => update('clientMode', 'walkin')}
             >
               Cliente avulso
@@ -114,10 +114,10 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
           </div>
 
           {form.clientMode === 'existing' ? (
-            <label>
+            <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
               Cliente
               {db.clients.length === 0 ? (
-                <small className="field-hint">
+                <small className="text-[10px] font-normal text-[var(--text-dim)]">
                   Nenhum cliente cadastrado — use "Cliente avulso" ou cadastre no menu Clientes.
                 </small>
               ) : (
@@ -135,7 +135,7 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
               )}
             </label>
           ) : (
-            <label>
+            <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
               Nome do cliente
               <input
                 value={form.clientName}
@@ -146,7 +146,7 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
             </label>
           )}
 
-          <label>
+          <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
             Serviço
             <select value={form.serviceId} onChange={(e) => onServiceChange(e.target.value)}>
               {services.map((service) => (
@@ -157,7 +157,7 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
             </select>
           </label>
 
-          <label>
+          <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
             Barbeiro
             <select value={form.barberId} onChange={(e) => update('barberId', e.target.value)}>
               {barbers.length === 0 && <option value="">—</option>}
@@ -169,28 +169,28 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
             </select>
           </label>
 
-          <div className="form-row">
-            <label>
+          <div className="grid gap-[15px] sm:grid-cols-2">
+            <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
               Data
               <input type="date" value={form.date} onChange={(e) => update('date', e.target.value)} />
             </label>
-            <label>
+            <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
               Horário
               <input type="time" value={form.time} onChange={(e) => update('time', e.target.value)} />
             </label>
           </div>
 
-          <label>
+          <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
             Valor (R$)
             <input value={form.price} onChange={(e) => update('price', e.target.value)} inputMode="decimal" />
           </label>
 
-          <label>
+          <label className="grid gap-2 text-[11px] font-semibold text-[var(--text-muted)]">
             Observação
             <input value={form.note} onChange={(e) => update('note', e.target.value)} placeholder="opcional" />
           </label>
 
-          <button className="primary-button full" type="submit">
+          <button className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-4 py-2.5 text-xs font-semibold text-[var(--accent-ink)] hover:brightness-110" type="submit">
             {initial ? 'Salvar alterações' : 'Adicionar à agenda'}
           </button>
         </form>

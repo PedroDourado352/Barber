@@ -55,7 +55,7 @@ function AppLayout() {
   }, [theme])
 
   return (
-    <div className="app-shell">
+    <div className="flex min-h-screen bg-[var(--bg)]">
       <Sidebar
         isOpen={isSidebarOpen}
         navigation={navigation}
@@ -65,19 +65,19 @@ function AppLayout() {
         onLogout={logout}
         onClose={() => setSidebarOpen(false)}
       />
-      <main className="main-content">
-        <header className="topbar">
-          <button className="icon-button menu-trigger" aria-label="Abrir menu" onClick={() => setSidebarOpen(true)}>
+      <main className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-10 flex h-[68px] items-center justify-between border-b border-[var(--border-soft)] bg-[var(--topbar-bg)] px-5 backdrop-blur-xl sm:px-8 lg:px-11">
+          <button className="hidden h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)] max-md:grid" aria-label="Abrir menu" onClick={() => setSidebarOpen(true)}>
             <Menu size={20} />
           </button>
-          <div className="breadcrumbs">
+          <div className="flex items-center gap-2.5 text-xs text-[var(--text-dim)]">
             <span>{currentUser?.business || 'Workspace'}</span>
-            <span className="breadcrumb-separator">/</span>
-            <strong>{title}</strong>
+            <span className="text-[var(--border-strong)]">/</span>
+            <strong className="font-semibold text-[var(--text)]">{title}</strong>
           </div>
-          <div className="topbar-actions">
+          <div className="flex items-center gap-1">
             <button
-              className="icon-button"
+              className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)]"
               aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
               aria-pressed={theme === 'light'}
               title={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
@@ -85,13 +85,13 @@ function AppLayout() {
             >
               {theme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
             </button>
-            <button className="icon-button" aria-label="Ajuda">
+            <button className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)]" aria-label="Ajuda">
               <CircleHelp size={19} />
             </button>
-            <button className="icon-button" aria-label="Configurações">
+            <button className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)]" aria-label="Configurações">
               <Settings size={19} />
             </button>
-            <div className="user-avatar" aria-label={`Perfil de ${currentUser?.name}`}>
+            <div className="ml-2 grid h-8 w-8 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[10px] font-bold text-[var(--text)]" aria-label={`Perfil de ${currentUser?.name}`}>
               {initialsFrom(currentUser?.name)}
             </div>
           </div>

@@ -41,48 +41,48 @@ function DashboardPage() {
   ]
 
   return (
-    <div className="page-content mx-auto w-full max-w-[1440px] px-5 pb-14 pt-9 sm:px-8 lg:px-11">
-      <section className="page-heading flex flex-wrap items-end justify-between gap-5">
+    <div className="mx-auto w-full max-w-[1440px] px-5 pb-14 pt-9 sm:px-8 lg:px-11">
+      <section className="mb-7 flex flex-wrap items-end justify-between gap-5">
         <div>
-          <p className="eyebrow">{formatLongDate(today)}</p>
-          <h1>
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1.1px] text-[var(--text-dim)]">{formatLongDate(today)}</p>
+          <h1 className="m-0 font-['Space_Grotesk'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">
             {greeting()}, {firstName} <span className="wave">✦</span>
           </h1>
-          <p className="heading-subtitle">Aqui está o que está acontecendo na sua barbearia.</p>
+          <p className="mt-2 text-[13px] text-[var(--text-muted)]">Aqui está o que está acontecendo na sua barbearia.</p>
         </div>
         <button
-          className="primary-button inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold"
+          className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2.5 text-xs font-semibold text-[var(--accent-ink)] hover:brightness-110"
           onClick={() => navigate('/agendar')}
         >
           <Plus size={18} /> Novo agendamento
         </button>
       </section>
 
-      <section className="stats-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mb-[22px] grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </section>
 
-      <section className="dashboard-grid grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(320px,0.82fr)]">
+      <section className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(320px,0.82fr)]">
         <AppointmentsList onSeeAll={() => navigate('/agenda')} />
-        <aside className="right-column grid content-start gap-3">
-          <section className="panel performance-panel rounded-2xl">
-            <div className="panel-heading">
+        <aside className="grid content-start gap-3">
+          <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)] sm:p-[22px]">
+            <div className="flex items-start justify-between">
               <div>
-                <p className="panel-kicker">DESEMPENHO</p>
-                <h2>Resumo da semana</h2>
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1px] text-[var(--text-dim)]">DESEMPENHO</p>
+                <h2 className="m-0 text-[17px] font-semibold text-[var(--text)]">Resumo da semana</h2>
               </div>
             </div>
-            <div className="performance-value">
+            <div className="mt-[22px] font-['Space_Grotesk'] text-[27px] font-semibold text-[var(--text)]">
               {formatCurrency(week.income)}
               {week.income > 0 && (
-                <span>
+                <span className="ml-2 inline-flex items-center gap-1 text-[10px] text-[var(--green)]">
                   <ArrowUpRight size={15} /> últimos 7 dias
                 </span>
               )}
             </div>
-            <p className="muted-copy">Faturamento acumulado</p>
+            <p className="my-1 mb-5 text-[10px] text-[var(--text-dim)]">Faturamento acumulado</p>
             <div className="chart" aria-label="Gráfico de faturamento semanal">
               <div className="chart-line">
                 {chart.map((day) => (
@@ -101,29 +101,29 @@ function DashboardPage() {
             </div>
           </section>
 
-          <section className="panel services-panel rounded-2xl">
-            <div className="panel-heading">
+          <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)] sm:p-[22px]">
+            <div className="flex items-start justify-between">
               <div>
-                <p className="panel-kicker">MAIS POPULARES</p>
-                <h2>Serviços da semana</h2>
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1px] text-[var(--text-dim)]">MAIS POPULARES</p>
+                <h2 className="m-0 text-[17px] font-semibold text-[var(--text)]">Serviços da semana</h2>
               </div>
-              <button className="text-button" onClick={() => navigate('/servicos')}>
+              <button className="bg-transparent text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text)]" onClick={() => navigate('/servicos')}>
                 Ver todos
               </button>
             </div>
             {popular.length === 0 ? (
-              <p className="muted-copy empty-inline">Sem atendimentos concluídos ainda.</p>
+              <p className="m-0 py-7 text-center text-xs text-[var(--text-dim)]">Sem atendimentos concluídos ainda.</p>
             ) : (
               popular.map((service, index) => (
-                <div className="service-item" key={service.name}>
-                  <span className={`service-icon ${index === 0 ? 'dark' : 'light'}`}>
+                <div className="flex items-center gap-3 border-t border-[var(--border-soft)] py-3.5" key={service.name}>
+                  <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-[9px] ${index === 0 ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'bg-[var(--surface-3)] text-[var(--text-muted)]'}`}>
                     <Scissors size={17} />
                   </span>
-                  <div>
-                    <strong>{service.name}</strong>
-                    <span>{service.count} agendamento(s)</span>
+                  <div className="grid min-w-0 flex-1 gap-0.5">
+                    <strong className="text-[12px] text-[var(--text)]">{service.name}</strong>
+                    <span className="text-[10px] text-[var(--text-dim)]">{service.count} agendamento(s)</span>
                   </div>
-                  <b>{formatCurrency(service.revenue)}</b>
+                  <b className="text-xs text-[var(--text)]">{formatCurrency(service.revenue)}</b>
                 </div>
               ))
             )}

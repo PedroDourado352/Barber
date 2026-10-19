@@ -13,8 +13,8 @@ function App() {
 
   if (!ready) {
     return (
-      <div className="app-loading">
-        <div className="spinner" />
+      <div className="grid min-h-screen place-items-center bg-[var(--bg)]">
+        <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-[var(--border)] border-t-[var(--text)]" />
       </div>
     )
   }
