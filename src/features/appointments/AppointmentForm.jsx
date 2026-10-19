@@ -47,7 +47,7 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
     }))
   }
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault()
     const service = services.find((s) => s.id === form.serviceId)
     if (!service) return
@@ -59,8 +59,11 @@ function AppointmentForm({ initial, defaultDate, onClose }) {
     } else {
       clientName = form.clientName.trim()
       // Cliente avulso com nome vira cadastro automático para alimentar o histórico.
+      // Esperamos o cliente ser gravado no banco ANTES de criar o agendamento,
+      // senão a chave estrangeira falha (409 Conflict).
       if (clientName) {
-        const created = addClient({ name: clientName, phone: '', email: '', notes: '' })
+        const created = await addClient({ name: clientName, phone: '', email: '', notes: '' })
+        if (!created) return // falhou ao salvar o cliente; não cria o agendamento
         clientId = created.id
       }
     }

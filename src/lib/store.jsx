@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import {
   DEFAULT_SERVICES,
   emptyDatabase,
@@ -8,39 +8,160 @@ import {
   saveDatabase,
   saveSession,
 } from './db'
-import { createId } from './id'
+import { uuid } from './id'
 import { todayISO } from './format'
+import { isSupabaseConfigured, supabase } from './supabase'
+import {
+  deleteRow,
+  deleteTransactionsByAppointment,
+  fetchAll,
+  insertRow,
+  insertRows,
+  updateRow,
+} from './supabaseData'
 
 const StoreContext = createContext(null)
 
+function mapSupabaseUser(user) {
+  if (!user) return null
+  const meta = user.user_metadata || {}
+  return {
+    id: user.id,
+    email: user.email || '',
+    name: meta.name || meta.full_name || (user.email || '').split('@')[0],
+    business: meta.business || '',
+    phone: meta.phone || '',
+  }
+}
+
+function translateAuthError(message = '') {
+  const m = message.toLowerCase()
+  if (m.includes('invalid login')) return 'E-mail ou senha incorretos.'
+  if (m.includes('already registered') || m.includes('already been registered'))
+    return 'Já existe uma conta com este e-mail.'
+  if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.'
+  if (m.includes('password should be at least')) return 'A senha é muito curta.'
+  if (m.includes('unable to validate email')) return 'E-mail inválido.'
+  if (m.includes('rate limit')) return 'Muitas tentativas. Aguarde um momento.'
+  return message || 'Não foi possível concluir. Tente novamente.'
+}
+
+const reportError = (context) => (error) => console.error(`[Supabase] ${context}:`, error?.message || error)
+
 export function StoreProvider({ children }) {
   const [db, setDb] = useState(() => loadDatabase())
-  const [session, setSession] = useState(() => loadSession())
-  const [ready, setReady] = useState(false)
+  const [localSession, setLocalSession] = useState(() => loadSession())
+  const [supaUser, setSupaUser] = useState(null)
+  const [authReady, setAuthReady] = useState(!isSupabaseConfigured)
+  const [dataReady, setDataReady] = useState(!isSupabaseConfigured)
+  const [dbReady, setDbReady] = useState(false)
   const firstRun = useRef(true)
 
-  // Persiste o banco sempre que ele muda (menos na montagem inicial).
   useEffect(() => {
     if (firstRun.current) {
       firstRun.current = false
-      setReady(true)
+      setDbReady(true)
       return
     }
-    saveDatabase(db)
+    if (!isSupabaseConfigured) saveDatabase(db)
   }, [db])
 
   useEffect(() => {
-    saveSession(session)
-  }, [session])
+    if (!isSupabaseConfigured) saveSession(localSession)
+  }, [localSession])
+
+  // Sessão do Supabase.
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    let active = true
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return
+      setSupaUser(mapSupabaseUser(data.session?.user))
+      setAuthReady(true)
+    })
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSupaUser(mapSupabaseUser(session?.user))
+    })
+    return () => {
+      active = false
+      listener.subscription.unsubscribe()
+    }
+  }, [])
+
+  const currentUser = useMemo(() => {
+    if (isSupabaseConfigured) return supaUser
+    const user = db.users.find((u) => u.id === localSession?.userId)
+    if (!user) return null
+    return { id: user.id, email: user.email, name: user.name, business: user.business, phone: user.phone }
+  }, [supaUser, db.users, localSession])
+
+  // Carrega os dados do Supabase quando o usuário entra.
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    if (!currentUser) {
+      setDb(emptyDatabase())
+      setDataReady(true)
+      return
+    }
+    let active = true
+    setDataReady(false)
+    ;(async () => {
+      try {
+        const data = await fetchAll()
+        if (data.services.length === 0 && data.barbers.length === 0) {
+          const ownerBarber = await insertRow('barbers', {
+            name: currentUser.name || 'Barbeiro',
+            commissionRate: 1,
+            active: true,
+          })
+          const seededServices = await insertRows(
+            'services',
+            DEFAULT_SERVICES.map((s) => ({ ...s, active: true })),
+          )
+          data.barbers = [ownerBarber]
+          data.services = seededServices
+        }
+        if (active) setDb({ ...emptyDatabase(), ...data })
+      } catch (error) {
+        reportError('carregar dados')(error)
+      } finally {
+        if (active) setDataReady(true)
+      }
+    })()
+    return () => {
+      active = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.id])
+
+  // Seed para o modo LOCAL (sem Supabase).
+  useEffect(() => {
+    if (isSupabaseConfigured) return
+    if (!currentUser) return
+    if (db.services.length === 0 && db.barbers.length === 0) {
+      const ownerBarber = { id: 1, name: currentUser.name || 'Barbeiro', commissionRate: 1, active: true }
+      const seeded = DEFAULT_SERVICES.map((s, i) => ({ id: i + 1, ...s, active: true }))
+      setDb((cur) => ({ ...cur, barbers: [ownerBarber], services: seeded }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.id])
 
   // --- Autenticação -------------------------------------------------------
-  const register = ({ name, business, email, phone, password }) => {
+  const register = async ({ name, business, email, phone, password }) => {
     const normalizedEmail = String(email).trim().toLowerCase()
-    if (db.users.some((user) => user.email === normalizedEmail)) {
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: { data: { name: name.trim(), business: business.trim(), phone: phone.trim() } },
+      })
+      if (error) return { ok: false, error: translateAuthError(error.message) }
+      return { ok: true, needsConfirmation: !data.session }
+    }
+    if (db.users.some((u) => u.email === normalizedEmail)) {
       return { ok: false, error: 'Já existe uma conta com este e-mail.' }
     }
-    const userId = createId('user')
-    const barberId = createId('barber')
+    const userId = uuid()
     const newUser = {
       id: userId,
       name: name.trim(),
@@ -50,51 +171,52 @@ export function StoreProvider({ children }) {
       passwordHash: hashPassword(password),
       createdAt: new Date().toISOString(),
     }
-    // O dono vira o primeiro barbeiro (comissão 100% por padrão).
-    const ownerBarber = {
-      id: barberId,
-      name: name.trim(),
-      commissionRate: 1,
-      active: true,
-    }
-    const seededServices = DEFAULT_SERVICES.map((service) => ({
-      id: createId('svc'),
-      name: service.name,
-      durationMin: service.durationMin,
-      price: service.price,
-      active: true,
-    }))
-    setDb((current) => ({
-      ...current,
-      users: [...current.users, newUser],
-      barbers: [...current.barbers, ownerBarber],
-      services: [...current.services, ...seededServices],
-    }))
-    setSession({ userId })
+    setDb((cur) => ({ ...cur, users: [...cur.users, newUser] }))
+    setLocalSession({ userId })
     return { ok: true }
   }
 
-  const login = ({ email, password }) => {
+  const login = async ({ email, password }) => {
     const normalizedEmail = String(email).trim().toLowerCase()
-    const user = db.users.find((item) => item.email === normalizedEmail)
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password })
+      if (error) return { ok: false, error: translateAuthError(error.message) }
+      return { ok: true }
+    }
+    const user = db.users.find((u) => u.email === normalizedEmail)
     if (!user || user.passwordHash !== hashPassword(password)) {
       return { ok: false, error: 'E-mail ou senha incorretos.' }
     }
-    setSession({ userId: user.id })
+    setLocalSession({ userId: user.id })
     return { ok: true }
   }
 
-  const logout = () => setSession(null)
+  const logout = async () => {
+    if (isSupabaseConfigured) await supabase.auth.signOut()
+    else setLocalSession(null)
+  }
 
-  const currentUser = useMemo(
-    () => db.users.find((user) => user.id === session?.userId) || null,
-    [db.users, session],
-  )
+  // --- CRUD ---------------------------------------------------------------
+  // No modo local, o id é um número sequencial calculado aqui.
+  const nextLocalId = (collection) => {
+    const ids = db[collection].map((x) => Number(x.id)).filter(Number.isFinite)
+    return ids.length ? Math.max(...ids) + 1 : 1
+  }
 
-  // --- Helpers de mutação genéricos --------------------------------------
-  const addTo = (collection, record, prefix) => {
-    const id = record.id || createId(prefix)
-    const item = { ...record, id, createdAt: record.createdAt || new Date().toISOString() }
+  // Insere: no Supabase o banco gera o id e o devolvemos; depois atualizamos a
+  // tela. Retorna o registro salvo (ou null em caso de erro).
+  const addTo = async (collection, record) => {
+    if (isSupabaseConfigured) {
+      try {
+        const saved = await insertRow(collection, record)
+        setDb((current) => ({ ...current, [collection]: [...current[collection], saved] }))
+        return saved
+      } catch (error) {
+        reportError(`inserir ${collection}`)(error)
+        return null
+      }
+    }
+    const item = { ...record, id: nextLocalId(collection), createdAt: record.createdAt || new Date().toISOString() }
     setDb((current) => ({ ...current, [collection]: [...current[collection], item] }))
     return item
   }
@@ -102,130 +224,103 @@ export function StoreProvider({ children }) {
   const updateIn = (collection, id, patch) => {
     setDb((current) => ({
       ...current,
-      [collection]: current[collection].map((item) =>
-        item.id === id ? { ...item, ...patch } : item,
-      ),
+      [collection]: current[collection].map((item) => (item.id === id ? { ...item, ...patch } : item)),
     }))
+    if (isSupabaseConfigured) updateRow(collection, id, patch).catch(reportError(`atualizar ${collection}`))
   }
 
   const removeFrom = (collection, id) => {
-    setDb((current) => ({
-      ...current,
-      [collection]: current[collection].filter((item) => item.id !== id),
-    }))
+    setDb((current) => ({ ...current, [collection]: current[collection].filter((item) => item.id !== id) }))
+    if (isSupabaseConfigured) deleteRow(collection, id).catch(reportError(`excluir ${collection}`))
   }
 
   // --- Serviços -----------------------------------------------------------
-  const addService = (data) =>
-    addTo('services', { active: true, ...data }, 'svc')
+  const addService = (data) => addTo('services', { active: true, ...data })
   const updateService = (id, patch) => updateIn('services', id, patch)
   const removeService = (id) => removeFrom('services', id)
 
   // --- Barbeiros ----------------------------------------------------------
-  const addBarber = (data) =>
-    addTo('barbers', { active: true, commissionRate: 0.5, ...data }, 'barber')
+  const addBarber = (data) => addTo('barbers', { active: true, commissionRate: 0.5, ...data })
   const updateBarber = (id, patch) => updateIn('barbers', id, patch)
   const removeBarber = (id) => removeFrom('barbers', id)
 
   // --- Clientes -----------------------------------------------------------
-  const addClient = (data) => addTo('clients', data, 'client')
+  const addClient = (data) => addTo('clients', data)
   const updateClient = (id, patch) => updateIn('clients', id, patch)
   const removeClient = (id) => removeFrom('clients', id)
 
   // --- Agendamentos -------------------------------------------------------
-  const addAppointment = (data) =>
-    addTo('appointments', { status: 'confirmado', ...data }, 'appt')
+  const addAppointment = (data) => addTo('appointments', { status: 'confirmado', ...data })
   const updateAppointment = (id, patch) => updateIn('appointments', id, patch)
   const removeAppointment = (id) => {
-    // Remove também a transação gerada por este agendamento, se houver.
     setDb((current) => ({
       ...current,
       appointments: current.appointments.filter((item) => item.id !== id),
       transactions: current.transactions.filter((t) => t.appointmentId !== id),
     }))
+    if (isSupabaseConfigured) {
+      deleteTransactionsByAppointment(id)
+        .then(() => deleteRow('appointments', id))
+        .catch(reportError('excluir agendamento'))
+    }
   }
 
-  // Concluir um agendamento: marca como concluído e lança a entrada no caixa.
   const completeAppointment = (id, { method = 'Dinheiro' } = {}) => {
-    setDb((current) => {
-      const appt = current.appointments.find((item) => item.id === id)
-      if (!appt) return current
-      const already = current.transactions.find((t) => t.appointmentId === id)
-      const appointments = current.appointments.map((item) =>
-        item.id === id ? { ...item, status: 'concluido' } : item,
-      )
-      if (already) {
-        return { ...current, appointments }
-      }
-      const transaction = {
-        id: createId('tx'),
-        type: 'entrada',
-        source: 'agendamento',
-        appointmentId: id,
-        amount: Number(appt.price) || 0,
-        method,
-        barberId: appt.barberId || null,
-        description: appt.serviceName || 'Atendimento',
-        date: appt.date || todayISO(),
-        createdAt: new Date().toISOString(),
-      }
-      return {
-        ...current,
-        appointments,
-        transactions: [...current.transactions, transaction],
-      }
+    const appt = db.appointments.find((item) => item.id === id)
+    if (!appt) return
+    updateAppointment(id, { status: 'concluido' })
+    const already = db.transactions.find((t) => t.appointmentId === id)
+    if (already) return
+    addTo('transactions', {
+      type: 'entrada',
+      source: 'agendamento',
+      appointmentId: id,
+      amount: Number(appt.price) || 0,
+      method,
+      barberId: appt.barberId || null,
+      description: appt.serviceName || 'Atendimento',
+      date: appt.date || todayISO(),
     })
   }
 
   // --- Caixa / transações -------------------------------------------------
   const addTransaction = (data) =>
-    addTo(
-      'transactions',
-      { type: 'entrada', source: 'manual', method: 'Dinheiro', date: todayISO(), ...data },
-      'tx',
-    )
+    addTo('transactions', { type: 'entrada', source: 'manual', method: 'Dinheiro', date: todayISO(), ...data })
   const updateTransaction = (id, patch) => updateIn('transactions', id, patch)
   const removeTransaction = (id) => removeFrom('transactions', id)
 
-  // --- Manutenção ---------------------------------------------------------
   const resetData = () => {
+    if (isSupabaseConfigured) return
     const base = emptyDatabase()
-    // Preserva os usuários para não perder o login.
     base.users = db.users
     setDb(base)
   }
 
   const value = {
-    ready,
+    ready: dbReady && authReady && dataReady,
+    usingSupabase: isSupabaseConfigured,
     db,
     currentUser,
     isAuthenticated: Boolean(currentUser),
-    // auth
     register,
     login,
     logout,
-    // services
     addService,
     updateService,
     removeService,
-    // barbers
     addBarber,
     updateBarber,
     removeBarber,
-    // clients
     addClient,
     updateClient,
     removeClient,
-    // appointments
     addAppointment,
     updateAppointment,
     removeAppointment,
     completeAppointment,
-    // transactions
     addTransaction,
     updateTransaction,
     removeTransaction,
-    // misc
     resetData,
   }
 
@@ -234,8 +329,6 @@ export function StoreProvider({ children }) {
 
 export function useStore() {
   const context = useContext(StoreContext)
-  if (!context) {
-    throw new Error('useStore precisa estar dentro de <StoreProvider>')
-  }
+  if (!context) throw new Error('useStore precisa estar dentro de <StoreProvider>')
   return context
 }

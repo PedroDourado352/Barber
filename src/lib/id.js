@@ -1,7 +1,15 @@
-// Gerador de identificadores simples e únicos o suficiente para uso local.
-// Quando migrar para o Firebase, os ids passam a vir do Firestore (doc.id).
+// Gera um UUID v4. Usado como id de todos os registros — compatível tanto
+// com o localStorage quanto com as colunas uuid do Supabase/Postgres.
+export function uuid() {
+  if (globalThis.crypto?.randomUUID) return crypto.randomUUID()
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
+// Mantido por compatibilidade (login local).
 export function createId(prefix = 'id') {
-  const random = Math.random().toString(36).slice(2, 10)
-  const time = Date.now().toString(36)
-  return `${prefix}_${time}${random}`
+  return `${prefix}_${uuid()}`
 }

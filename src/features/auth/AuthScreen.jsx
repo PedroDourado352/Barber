@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, Phone, Scissors, User } from 'lucide-react'
 import { useStore } from '../../lib/store'
 
@@ -11,15 +10,7 @@ function Field({ id, label, icon: Icon, type = 'text', value, onChange, placehol
       <span>{label}</span>
       <div className="auth-input-wrap">
         <Icon size={17} />
-        <input
-          id={id}
-          name={id}
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          required={required}
-        />
+        <input id={id} name={id} type={type} value={value} onChange={onChange} placeholder={placeholder} required={required} />
         {suffix}
       </div>
     </label>
@@ -37,12 +28,7 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, placehol
       onChange={onChange}
       placeholder={placeholder}
       suffix={
-        <button
-          type="button"
-          className="password-toggle"
-          aria-label={visible ? 'Ocultar senha' : 'Mostrar senha'}
-          onClick={onToggle}
-        >
+        <button type="button" className="password-toggle" aria-label={visible ? 'Ocultar senha' : 'Mostrar senha'} onClick={onToggle}>
           {visible ? <EyeOff size={17} /> : <Eye size={17} />}
         </button>
       }
@@ -50,15 +36,14 @@ function PasswordField({ id, label, value, onChange, visible, onToggle, placehol
   )
 }
 
-function AuthScreen({ initialMode = modes.login }) {
+function AuthScreen() {
   const { login, register } = useStore()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const mode = initialMode
+  const [mode, setMode] = useState(modes.login)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState('')
-  const [info, setInfo] = useState(location.state?.info || '')
+  const [info, setInfo] = useState('')
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     name: '',
     business: '',
@@ -77,41 +62,40 @@ function AuthScreen({ initialMode = modes.login }) {
   }
 
   const switchMode = (next) => {
+    setMode(next)
     setError('')
     setInfo('')
-    navigate(next === modes.register ? '/register' : next === modes.forgot ? '/forgot-password' : '/login')
   }
 
-  const submitForm = (event) => {
+  const submitForm = async (event) => {
     event.preventDefault()
     setError('')
+    setInfo('')
 
     if (mode === modes.forgot) {
-      navigate('/login', { state: { info: 'Se o e-mail existir, enviaremos as instruções de recuperação.' } })
+      setInfo('Se o e-mail existir, enviaremos as instruções de recuperação.')
+      setMode(modes.login)
       return
     }
 
     if (mode === modes.register) {
-      if (form.password.length < 8) {
-        setError('A senha deve ter pelo menos 8 caracteres.')
-        return
-      }
-      if (form.password !== form.confirmation) {
-        setError('As senhas não conferem.')
-        return
-      }
-      if (!form.terms) {
-        setError('É preciso aceitar os termos de uso.')
-        return
-      }
-      const result = register(form)
-      if (!result.ok) setError(result.error)
-      return
+      if (form.password.length < 8) return setError('A senha deve ter pelo menos 8 caracteres.')
+      if (form.password !== form.confirmation) return setError('As senhas não conferem.')
+      if (!form.terms) return setError('É preciso aceitar os termos de uso.')
     }
 
-    // login
-    const result = login({ email: form.email, password: form.password })
-    if (!result.ok) setError(result.error)
+    setLoading(true)
+    const result = mode === modes.register ? await register(form) : await login({ email: form.email, password: form.password })
+    setLoading(false)
+
+    if (!result.ok) {
+      setError(result.error)
+      return
+    }
+    if (result.needsConfirmation) {
+      setInfo('Conta criada! Confirme pelo link enviado ao seu e-mail e depois faça login.')
+      setMode(modes.login)
+    }
   }
 
   const title =
@@ -126,6 +110,14 @@ function AuthScreen({ initialMode = modes.login }) {
       : mode === modes.register
       ? 'Crie sua conta e organize sua barbearia em poucos minutos.'
       : 'Enviaremos um link para você criar uma nova senha.'
+
+  const submitLabel = loading
+    ? 'Aguarde...'
+    : mode === modes.login
+    ? 'Entrar na minha conta'
+    : mode === modes.register
+    ? 'Criar minha conta'
+    : 'Enviar link de recuperação'
 
   return (
     <main className="auth-page">
@@ -197,9 +189,9 @@ function AuthScreen({ initialMode = modes.login }) {
               </label>
             )}
 
-            <button className="auth-submit" type="submit">
-              {mode === modes.login ? 'Entrar na minha conta' : mode === modes.register ? 'Criar minha conta' : 'Enviar link de recuperação'}
-              <ArrowRight size={17} />
+            <button className="auth-submit" type="submit" disabled={loading}>
+              {submitLabel}
+              {!loading && <ArrowRight size={17} />}
             </button>
           </form>
 

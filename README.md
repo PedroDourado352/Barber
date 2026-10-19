@@ -28,11 +28,31 @@ npm run preview    # serve o build localmente
 - **Relatórios** — comissão por barbeiro e serviços mais populares.
 - **Dashboard** — faturamento do dia, agendamentos, novos clientes, ocupação e gráfico dos últimos 7 dias, tudo calculado a partir dos dados reais.
 
-## Onde os dados ficam
+## Autenticação com Supabase
 
-Hoje os dados são salvos no **navegador** (localStorage). Toda a aplicação conversa apenas com a camada em `src/lib/` (nunca com o localStorage diretamente), então a migração para um backend é isolada.
+O login usa **Supabase Auth**. Enquanto as chaves não forem configuradas, o app
+cai automaticamente em um login local (localStorage) — nada quebra.
 
-> **Próximo passo (multi-dispositivo + app mobile):** trocar a implementação de `src/lib/db.js` e dos métodos de `src/lib/store.jsx` por **Firebase (Firestore + Auth)**. As telas não mudam. Com o Firestore, o mesmo backend passa a servir este painel web e um futuro app em Flutter.
+### Como ativar (grátis)
+
+1. Crie uma conta em https://supabase.com e um novo projeto (plano **Free**).
+2. No projeto, vá em **Project Settings → API** e copie:
+   - **Project URL**
+   - **Project API keys → `anon` `public`** (essa chave é pública; pode ir no front-end)
+3. Abra o arquivo `.env` na raiz de `Barber/` e preencha:
+   ```
+   VITE_SUPABASE_URL=https://xxxxx.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
+   ```
+4. (Opcional, para testar rápido) Em **Authentication → Sign In / Providers → Email**,
+   desligue "Confirm email" para entrar sem confirmar por e-mail. Para produção,
+   deixe ligado e configure o **Site URL** em **Authentication → URL Configuration**.
+5. Reinicie o `npm run dev`. Pronto — cadastro e login passam a usar o Supabase.
+
+> Os dados do negócio (agenda, clientes, serviços, caixa) ainda ficam no navegador.
+> O próximo passo é mover essas tabelas para o Postgres do Supabase (com RLS),
+> reaproveitando o mesmo login — aí o sistema funciona em vários dispositivos e
+> habilita um app mobile.
 
 ## Estrutura
 
