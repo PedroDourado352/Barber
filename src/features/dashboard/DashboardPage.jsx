@@ -41,8 +41,8 @@ function DashboardPage() {
   ]
 
   return (
-    <div className="page-content">
-      <section className="page-heading">
+    <div className="page-content mx-auto w-full max-w-[1440px] px-5 pb-14 pt-9 sm:px-8 lg:px-11">
+      <section className="page-heading flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="eyebrow">{formatLongDate(today)}</p>
           <h1>
@@ -50,21 +50,24 @@ function DashboardPage() {
           </h1>
           <p className="heading-subtitle">Aqui está o que está acontecendo na sua barbearia.</p>
         </div>
-        <button className="primary-button" onClick={() => navigate('/agendar')}>
+        <button
+          className="primary-button inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold"
+          onClick={() => navigate('/agendar')}
+        >
           <Plus size={18} /> Novo agendamento
         </button>
       </section>
 
-      <section className="stats-grid">
+      <section className="stats-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </section>
 
-      <section className="dashboard-grid">
+      <section className="dashboard-grid grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(320px,0.82fr)]">
         <AppointmentsList onSeeAll={() => navigate('/agenda')} />
-        <aside className="right-column">
-          <section className="panel performance-panel">
+        <aside className="right-column grid content-start gap-3">
+          <section className="panel performance-panel rounded-2xl">
             <div className="panel-heading">
               <div>
                 <p className="panel-kicker">DESEMPENHO</p>
@@ -98,7 +101,7 @@ function DashboardPage() {
             </div>
           </section>
 
-          <section className="panel services-panel">
+          <section className="panel services-panel rounded-2xl">
             <div className="panel-heading">
               <div>
                 <p className="panel-kicker">MAIS POPULARES</p>
