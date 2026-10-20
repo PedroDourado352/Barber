@@ -3,12 +3,10 @@ import { Outlet, useLocation } from 'react-router-dom'
 import {
   CalendarDays,
   ChartNoAxesCombined,
-  CircleHelp,
   LayoutDashboard,
   Menu,
   Moon,
   Scissors,
-  Settings,
   Sparkles,
   Sun,
   Users,
@@ -84,12 +82,6 @@ function AppLayout() {
               onClick={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
             >
               {theme === 'dark' ? <Sun size={19} /> : <Moon size={19} />}
-            </button>
-            <button className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)]" aria-label="Ajuda">
-              <CircleHelp size={19} />
-            </button>
-            <button className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)]" aria-label="Configurações">
-              <Settings size={19} />
             </button>
             <div className="ml-2 grid h-8 w-8 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[10px] font-bold text-[var(--text)]" aria-label={`Perfil de ${currentUser?.name}`}>
               {initialsFrom(currentUser?.name)}
