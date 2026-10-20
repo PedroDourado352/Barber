@@ -39,6 +39,7 @@ const titles = {
 function AppLayout() {
   const { currentUser, logout, db } = useStore()
   const [isSidebarOpen, setSidebarOpen] = useState(false)
+  const [isSidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('barberly:sidebar-collapsed') === 'true')
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem('barberly:theme')
     if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
@@ -52,16 +53,22 @@ function AppLayout() {
     localStorage.setItem('barberly:theme', theme)
   }, [theme])
 
+  useEffect(() => {
+    localStorage.setItem('barberly:sidebar-collapsed', String(isSidebarCollapsed))
+  }, [isSidebarCollapsed])
+
   return (
     <div className="flex min-h-screen bg-[var(--bg)]">
       <Sidebar
         isOpen={isSidebarOpen}
+        isCollapsed={isSidebarCollapsed}
         navigation={navigation}
         user={currentUser}
         pendingCount={db.appointments.filter((a) => a.status === 'aguardando').length}
         onNavigate={() => setSidebarOpen(false)}
         onLogout={logout}
         onClose={() => setSidebarOpen(false)}
+        onToggleCollapse={() => setSidebarCollapsed((current) => !current)}
       />
       <main className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-10 flex h-[68px] items-center justify-between border-b border-[var(--border-soft)] bg-[var(--topbar-bg)] px-5 backdrop-blur-xl sm:px-8 lg:px-11">
