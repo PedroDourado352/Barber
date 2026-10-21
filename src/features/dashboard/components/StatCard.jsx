@@ -5,7 +5,7 @@ function StatCard({ label, value, change, note, icon: Icon, tone }) {
         <Icon size={18} />
       </div>
       <div className="text-xs text-[var(--text-muted)]">{label}</div>
-      <div className="mt-1 font-['Space_Grotesk'] text-[27px] font-semibold text-[var(--text)]">{value}</div>
+      <div className="mt-1 font-['Inter'] text-[27px] font-semibold text-[var(--text)]">{value}</div>
       <div className="flex items-center gap-2 pt-2.5 text-[10.5px] text-[var(--text-dim)]">
         {change && <span className={`rounded px-1.5 py-0.5 font-semibold text-[var(--${tone})]`}>{change}</span>}
         <span>{note}</span>

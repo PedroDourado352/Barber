@@ -142,7 +142,7 @@ function AuthScreen() {
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-[var(--accent)] text-[var(--accent-ink)]">
               <Scissors size={18} />
             </span>
-            <strong className="font-['Space_Grotesk'] text-lg text-[var(--text)]">barberly</strong>
+            <strong className="font-['Inter'] text-lg text-[var(--text)]">barberly</strong>
           </div>
 
           {mode !== modes.forgot && (
@@ -160,7 +160,7 @@ function AuthScreen() {
             <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--text-dim)]">
               {mode === modes.register ? 'NOVO POR AQUI?' : mode === modes.forgot ? 'ACESSO À CONTA' : 'BEM-VINDO'}
             </span>
-            <h2 className="mt-2 font-['Space_Grotesk'] text-2xl font-semibold text-[var(--text)]">{title}</h2>
+            <h2 className="mt-2 font-['Inter'] text-2xl font-semibold text-[var(--text)]">{title}</h2>
             <p className="mt-2 text-[13px] text-[var(--text-muted)]">{description}</p>
           </div>
 

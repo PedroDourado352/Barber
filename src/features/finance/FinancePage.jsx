@@ -146,7 +146,7 @@ function FinancePage({ initialTab = 'cash' }) {
       <section className="mb-7 flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1.1px] text-[var(--text-dim)]">Financeiro</p>
-          <h1 className="m-0 font-['Space_Grotesk'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">Caixa</h1>
+          <h1 className="m-0 font-['Inter'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">Caixa</h1>
           <p className="mt-2 text-[13px] text-[var(--text-muted)]">Acompanhe entradas, saídas e comissões.</p>
         </div>
         <button className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-4 py-2.5 text-xs font-semibold text-[var(--accent-ink)] hover:brightness-110" onClick={() => setShowForm(true)}>
@@ -183,7 +183,7 @@ function FinancePage({ initialTab = 'cash' }) {
           </span>
           <div>
             <span className="text-[10px] text-[var(--text-dim)]">Entradas</span>
-            <strong className="font-['Space_Grotesk'] text-[22px] font-semibold text-[var(--text)]">{formatCurrency(summary.income)}</strong>
+            <strong className="font-['Inter'] text-[22px] font-semibold text-[var(--text)]">{formatCurrency(summary.income)}</strong>
           </div>
         </article>
         <article className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-[18px] shadow-[var(--shadow-card)]">
@@ -192,7 +192,7 @@ function FinancePage({ initialTab = 'cash' }) {
           </span>
           <div>
             <span className="text-[10px] text-[var(--text-dim)]">Saídas</span>
-            <strong className="font-['Space_Grotesk'] text-[22px] font-semibold text-[var(--text)]">{formatCurrency(summary.expense)}</strong>
+            <strong className="font-['Inter'] text-[22px] font-semibold text-[var(--text)]">{formatCurrency(summary.expense)}</strong>
           </div>
         </article>
         <article className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-[18px] shadow-[var(--shadow-card)]">
@@ -201,7 +201,7 @@ function FinancePage({ initialTab = 'cash' }) {
           </span>
           <div>
             <span className="text-[10px] text-[var(--text-dim)]">Saldo</span>
-            <strong className="font-['Space_Grotesk'] text-[22px] font-semibold text-[var(--text)]">{formatCurrency(summary.net)}</strong>
+            <strong className="font-['Inter'] text-[22px] font-semibold text-[var(--text)]">{formatCurrency(summary.net)}</strong>
           </div>
         </article>
       </section>

@@ -45,7 +45,7 @@ function DashboardPage() {
       <section className="mb-7 flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1.1px] text-[var(--text-dim)]">{formatLongDate(today)}</p>
-          <h1 className="m-0 font-['Space_Grotesk'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">
+          <h1 className="m-0 font-['Inter'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">
             {greeting()}, {firstName} <span className="wave">✦</span>
           </h1>
           <p className="mt-2 text-[13px] text-[var(--text-muted)]">Aqui está o que está acontecendo na sua barbearia.</p>
@@ -74,7 +74,7 @@ function DashboardPage() {
                 <h2 className="m-0 text-[17px] font-semibold text-[var(--text)]">Resumo da semana</h2>
               </div>
             </div>
-            <div className="mt-[22px] font-['Space_Grotesk'] text-[27px] font-semibold text-[var(--text)]">
+            <div className="mt-[22px] font-['Inter'] text-[27px] font-semibold text-[var(--text)]">
               {formatCurrency(week.income)}
               {week.income > 0 && (
                 <span className="ml-2 inline-flex items-center gap-1 text-[10px] text-[var(--green)]">

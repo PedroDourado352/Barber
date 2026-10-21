@@ -18,7 +18,7 @@ function PaymentDialog({ appointment, onConfirm, onClose }) {
       <p className="m-0 mb-5 text-[13px] leading-relaxed text-[var(--text-muted)]">
         <strong>{appointment.clientName}</strong> — {appointment.serviceName}
       </p>
-      <div className="my-[6px] mb-[22px] text-center font-['Space_Grotesk'] text-4xl font-semibold text-[var(--text)]">{formatCurrency(appointment.price)}</div>
+      <div className="my-[6px] mb-[22px] text-center font-['Inter'] text-4xl font-semibold text-[var(--text)]">{formatCurrency(appointment.price)}</div>
 
       <span className="mb-2 block text-[11px] font-semibold text-[var(--text-muted)]">Forma de pagamento</span>
       <div className="mb-5 grid grid-cols-2 gap-[9px]">

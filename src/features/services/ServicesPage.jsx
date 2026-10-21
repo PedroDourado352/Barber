@@ -102,7 +102,7 @@ function ServicesPage() {
       <section className="mb-7 flex flex-wrap items-end justify-between gap-5">
         <div>
           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[1.1px] text-[var(--text-dim)]">Configuração</p>
-          <h1 className="m-0 font-['Space_Grotesk'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">Serviços e equipe</h1>
+          <h1 className="m-0 font-['Inter'] text-[clamp(25px,3vw,32px)] font-semibold leading-tight text-[var(--text)]">Serviços e equipe</h1>
           <p className="mt-2 text-[13px] text-[var(--text-muted)]">Defina o que sua barbearia oferece e quem atende.</p>
         </div>
         {tab === 'services' ? (

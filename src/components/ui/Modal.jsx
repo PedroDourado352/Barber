@@ -19,7 +19,7 @@ function Modal({ title, kicker, children, onClose, size = 'default' }) {
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
             {kicker && <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[1px] text-[var(--text-dim)]">{kicker}</p>}
-            <h2 className="m-0 font-['Space_Grotesk'] text-xl font-semibold text-[var(--text)]">{title}</h2>
+            <h2 className="m-0 font-['Inter'] text-xl font-semibold text-[var(--text)]">{title}</h2>
           </div>
           <button className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[var(--text-muted)] transition hover:bg-[var(--hover)] hover:text-[var(--text)]" aria-label="Fechar" onClick={onClose}>
             <X size={19} />

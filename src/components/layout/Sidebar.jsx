@@ -8,10 +8,10 @@ function Sidebar({ isOpen, isCollapsed, navigation, user, pendingCount, onNaviga
       {isOpen && <button className="fixed inset-0 z-20 bg-black/50 md:hidden" aria-label="Fechar menu" onClick={onClose} />}
       <aside className={`fixed inset-y-0 left-0 z-30 flex w-64 shrink-0 flex-col border-r border-[var(--border-soft)] bg-[var(--bg-soft)] p-4 transition-[width,transform] md:static md:translate-x-0 ${isCollapsed ? 'md:w-[76px]' : 'md:w-64'} ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center gap-2.5 px-2.5 pb-6 pt-1">
-          <div className="grid h-[30px] w-[30px] place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)] shadow-lg">
+          {!isCollapsed && <div className="grid h-[30px] w-[30px] place-items-center rounded-[9px] bg-[var(--accent)] text-[var(--accent-ink)] shadow-lg">
             <Scissors size={18} strokeWidth={2.5} />
-          </div>
-          <span className={`font-['Space_Grotesk'] text-lg font-semibold text-[var(--text)] ${isCollapsed ? 'md:hidden' : ''}`}>barberly</span>
+          </div>}
+          <span className={`font-['Inter'] text-lg font-semibold text-[var(--text)] ${isCollapsed ? 'md:hidden' : ''}`}>barberly</span>
           <button className="ml-auto hidden h-[30px] w-[30px] place-items-center rounded-[9px] text-[var(--text-muted)] hover:bg-[var(--hover)] hover:text-[var(--text)] md:grid" aria-label={isCollapsed ? 'Expandir sidebar' : 'Minimizar sidebar'} title={isCollapsed ? 'Expandir sidebar' : 'Minimizar sidebar'} onClick={onToggleCollapse}>
             {isCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
           </button>
@@ -50,7 +50,7 @@ function Sidebar({ isOpen, isCollapsed, navigation, user, pendingCount, onNaviga
         <div className="mt-auto">
           <div className={`mx-1 mb-4 grid gap-1.5 rounded-[11px] border border-[var(--border)] bg-[var(--surface)] p-3.5 ${isCollapsed ? 'md:hidden' : ''}`}>
             <span className="text-[9px] font-bold uppercase tracking-[1.2px] text-[var(--text-dim)]">DICA</span>
-            <strong className="font-['Space_Grotesk'] text-[13px] font-semibold leading-tight text-[var(--text)]">Conclua os atendimentos para alimentar o caixa.</strong>
+            <strong className="font-['Inter'] text-[13px] font-semibold leading-tight text-[var(--text)]">Conclua os atendimentos para alimentar o caixa.</strong>
             <span className="text-[10.5px] leading-relaxed text-[var(--text-dim)]">Cada atendimento concluído vira uma entrada automática.</span>
           </div>
           <div className={`flex items-center gap-2.5 border-t border-[var(--border-soft)] px-1.5 pb-0 pt-4 ${isCollapsed ? 'md:justify-center md:px-0' : ''}`}>

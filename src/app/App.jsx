@@ -6,6 +6,7 @@ import ClientsPage from '../features/clients/ClientsPage'
 import ServicesPage from '../features/services/ServicesPage'
 import FinancePage from '../features/finance/FinancePage'
 import AuthScreen from '../features/auth/AuthScreen'
+import PublicBookingPage from '../features/public-booking/PublicBookingPage'
 import { useStore } from '../lib/store'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/b/:businessSlug" element={<PublicBookingPage />} />
         <Route
           path="/login"
           element={isAuthenticated ? <Navigate to="/" replace /> : <AuthScreen />}
