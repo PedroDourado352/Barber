@@ -8,6 +8,7 @@ import FinancePage from '../features/finance/FinancePage'
 import AuthScreen from '../features/auth/AuthScreen'
 import PublicBookingPage from '../features/public-booking/PublicBookingPage'
 import OnlinePage from '../features/online/OnlinePage'
+import BookingAssistantPage from '../features/booking/BookingAssistantPage'
 import { useStore } from '../lib/store'
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         />
         <Route element={isAuthenticated ? <AppLayout /> : <Navigate to="/login" replace />}>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/agendar" element={<BookingAssistantPage />} />
           <Route path="/agenda" element={<AgendaPage />} />
           <Route path="/clientes" element={<ClientsPage />} />
           <Route path="/servicos" element={<ServicesPage />} />
