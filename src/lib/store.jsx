@@ -12,15 +12,31 @@ import { uuid } from './id'
 import { todayISO } from './format'
 import { isSupabaseConfigured, supabase } from './supabase'
 import {
+  createShop,
   deleteRow,
   deleteTransactionsByAppointment,
   fetchAll,
+  fetchShop,
   insertRow,
   insertRows,
   updateRow,
+  updateShopRow,
 } from './supabaseData'
 
 const StoreContext = createContext(null)
+
+// Gera um "slug" (identificador de URL) a partir do nome da barbearia.
+function slugify(text) {
+  const base = String(text || 'barbearia')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+  const suffix = Math.random().toString(36).slice(2, 6)
+  return `${base || 'barbearia'}-${suffix}`
+}
 
 function mapSupabaseUser(user) {
   if (!user) return null
@@ -121,6 +137,20 @@ export function StoreProvider({ children }) {
           data.barbers = [ownerBarber]
           data.services = seededServices
         }
+        // Loja (link de agendamento online): cria na primeira vez.
+        let shop = await fetchShop()
+        if (!shop) {
+          try {
+            shop = await createShop({
+              slug: slugify(currentUser.business || currentUser.name),
+              business_name: currentUser.business || '',
+              whatsapp: currentUser.phone || '',
+            })
+          } catch (err) {
+            reportError('criar loja')(err)
+          }
+        }
+        data.shop = shop || null
         if (active) setDb({ ...emptyDatabase(), ...data })
       } catch (error) {
         reportError('carregar dados')(error)
@@ -197,14 +227,11 @@ export function StoreProvider({ children }) {
   }
 
   // --- CRUD ---------------------------------------------------------------
-  // No modo local, o id é um número sequencial calculado aqui.
   const nextLocalId = (collection) => {
     const ids = db[collection].map((x) => Number(x.id)).filter(Number.isFinite)
     return ids.length ? Math.max(...ids) + 1 : 1
   }
 
-  // Insere: no Supabase o banco gera o id e o devolvemos; depois atualizamos a
-  // tela. Retorna o registro salvo (ou null em caso de erro).
   const addTo = async (collection, record) => {
     if (isSupabaseConfigured) {
       try {
@@ -296,6 +323,14 @@ export function StoreProvider({ children }) {
     setDb(base)
   }
 
+  // --- Loja (agendamento online) ------------------------------------------
+  const updateShop = (patch) => {
+    setDb((current) => ({ ...current, shop: { ...current.shop, ...patch } }))
+    if (isSupabaseConfigured && db.shop?.owner_id) {
+      updateShopRow(db.shop.owner_id, patch).catch(reportError('atualizar loja'))
+    }
+  }
+
   const value = {
     ready: dbReady && authReady && dataReady,
     usingSupabase: isSupabaseConfigured,
@@ -321,6 +356,7 @@ export function StoreProvider({ children }) {
     addTransaction,
     updateTransaction,
     removeTransaction,
+    updateShop,
     resetData,
   }
 

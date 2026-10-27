@@ -7,6 +7,7 @@ import ServicesPage from '../features/services/ServicesPage'
 import FinancePage from '../features/finance/FinancePage'
 import AuthScreen from '../features/auth/AuthScreen'
 import PublicBookingPage from '../features/public-booking/PublicBookingPage'
+import OnlinePage from '../features/online/OnlinePage'
 import { useStore } from '../lib/store'
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           <Route path="/servicos" element={<ServicesPage />} />
           <Route path="/caixa" element={<FinancePage />} />
           <Route path="/relatorios" element={<FinancePage initialTab="reports" />} />
+          <Route path="/online" element={<OnlinePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

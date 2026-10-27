@@ -15,6 +15,7 @@ export const emptyDatabase = () => ({
   clients: [],
   appointments: [],
   transactions: [],
+  shop: null,
 })
 
 // Serviços padrão criados junto com a conta — o dono ajusta depois.

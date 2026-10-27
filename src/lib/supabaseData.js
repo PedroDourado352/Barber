@@ -87,3 +87,21 @@ export async function deleteTransactionsByAppointment(appointmentId) {
   const { error } = await supabase.from('transactions').delete().eq('appointment_id', appointmentId)
   if (error) throw error
 }
+
+// --- Loja (agendamento online) ---
+export async function fetchShop() {
+  const { data, error } = await supabase.from('shops').select('*').maybeSingle()
+  if (error) throw error
+  return data // linha ou null
+}
+
+export async function createShop(shop) {
+  const { data, error } = await supabase.from('shops').insert(shop).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function updateShopRow(ownerId, patch) {
+  const { error } = await supabase.from('shops').update(patch).eq('owner_id', ownerId)
+  if (error) throw error
+}

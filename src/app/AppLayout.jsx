@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import {
   CalendarDays,
   ChartNoAxesCombined,
+  Globe,
   LayoutDashboard,
   Menu,
   Moon,
@@ -24,6 +25,7 @@ export const navigation = [
   { to: '/servicos', label: 'Serviços', icon: Scissors },
   { to: '/caixa', label: 'Caixa', icon: Wallet },
   { to: '/relatorios', label: 'Relatórios', icon: ChartNoAxesCombined },
+  { to: '/online', label: 'Online', icon: Globe },
 ]
 
 const titles = {
@@ -34,6 +36,7 @@ const titles = {
   '/servicos': 'Serviços',
   '/caixa': 'Caixa',
   '/relatorios': 'Relatórios',
+  '/online': 'Online',
 }
 
 function AppLayout() {
